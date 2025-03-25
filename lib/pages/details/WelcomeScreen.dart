@@ -23,11 +23,11 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7EB), // Fond clair comme ton design
+      backgroundColor: const Color(0xFFF5F7EB),
       body: Center(
         child: Image.asset(
-          'assets/images/logo.png', // Assure-toi que le chemin est correct
-          width: 250, // Ajuste la taille si nécessaire
+          'assets/images/logo.png',
+          width: 250,
           fit: BoxFit.contain,
         ),
       ),

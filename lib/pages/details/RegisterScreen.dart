@@ -21,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE6E6D8), // Light beige background
+      backgroundColor: const Color(0xFFE6E6D8),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -57,9 +57,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Image.asset(
-                      'assets/images/logo.png', // You'll need to add this asset
+                      'assets/images/logo.png',
                       width: 120,
-                      // Using an asset placeholder since we can't dynamically create image
                       errorBuilder: (context, error, stackTrace) {
                         return SizedBox(
                           width: 120,
@@ -93,7 +92,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                // Create account title
                 const Text(
                   'Créer Un Compte',
                   style: TextStyle(
@@ -104,7 +102,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                // Full name field
                 const Text(
                   'Nom Complet',
                   style: TextStyle(fontSize: 16, color: Colors.amber),
@@ -280,11 +277,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                // Create account button
+
                 ElevatedButton(
-                  onPressed: () {
-                    // Handle account creation
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFDCE4C), // Yellow button
                     foregroundColor: Colors.black,
@@ -299,7 +294,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                // Login link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

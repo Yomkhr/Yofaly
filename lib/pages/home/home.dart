@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:yofaly/pages/details/desserts.dart';
 import 'package:yofaly/pages/details/categorie.dart';
+import 'package:yofaly/pages/details/favoris.dart';
+import 'package:yofaly/pages/details/historique.dart';
+import 'package:yofaly/pages/details/historique.dart';
+import 'package:yofaly/pages/details/favoris.dart';
+import 'package:yofaly/pages/details/notifications.dart';
+import 'package:yofaly/pages/details/profil.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -23,7 +29,13 @@ class Home extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.person, color: Color(0xFFFFC107)),
-            onPressed: () {},
+            onPressed: () {
+              // la page Profil
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Profile()),
+              );
+            },
           ),
         ],
       ),
@@ -49,20 +61,24 @@ class Home extends StatelessWidget {
           _buildCategoryButton(
             context,
             'assets/images/plat.jpg',
-            'nos plats',
+            'Nos Plats',
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CategoriesPage()),
+              MaterialPageRoute(
+                builder: (context) => CategoriesPage(),
+              ), //  la page Plats
             ),
           ),
           SizedBox(height: 20),
           _buildCategoryButton(
             context,
             'assets/images/dessert.jpg',
-            'nos desserts',
+            'Nos Desserts',
             () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Desserts()),
+              MaterialPageRoute(
+                builder: (context) => Desserts(),
+              ), // la page Desserts
             ),
           ),
         ],
@@ -75,19 +91,43 @@ class Home extends StatelessWidget {
           children: [
             IconButton(
               icon: Icon(Icons.home, color: Colors.black),
-              onPressed: () {},
+              onPressed: () {
+                //  la page Home
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                );
+              },
             ),
             IconButton(
               icon: Icon(Icons.history, color: Colors.black),
-              onPressed: () {},
+              onPressed: () {
+                //  Historique
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => historique()),
+                );
+              },
             ),
             IconButton(
               icon: Icon(Icons.favorite_border, color: Colors.black),
-              onPressed: () {},
+              onPressed: () {
+                //  Favoris
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Favoris()),
+                );
+              },
             ),
             IconButton(
               icon: Icon(Icons.notifications, color: Colors.black),
-              onPressed: () {},
+              onPressed: () {
+                //  Notifications
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NotificationsPage()),
+                );
+              },
             ),
           ],
         ),
@@ -128,17 +168,115 @@ class CategoriesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFEFD5),
+      backgroundColor: Color(0xFFE5E3D7),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
-          "YOFALY",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+        title: Image.asset('assets/images/logo.png', height: 40),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.amber),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.person, color: Colors.amber),
+            onPressed: () {},
+          ),
+        ],
       ),
-      body: Center(child: Text("Page Catégorie")),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Recipe Title, Ingredient",
+                filled: true,
+                fillColor: const Color.fromARGB(255, 255, 255, 255),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: Icon(Icons.search, color: Colors.amber),
+              ),
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            "Nos catégories",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cursive',
+            ),
+          ),
+          SizedBox(height: 20),
+          Expanded(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    categoryButton('assets/images/marocaine.jpg', 'Marocaine'),
+                    categoryButton(
+                      'assets/images/tunisienne.jpg',
+                      'Tunisienne',
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                categoryButton('assets/images/algerienne.jpg', 'Algérienne'),
+              ],
+            ),
+          ),
+          BottomNavigationBar(
+            backgroundColor: Colors.amber,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, color: Colors.black),
+                label: "",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.history, color: Colors.black),
+                label: "",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite, color: Colors.black),
+                label: "",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications, color: Colors.black),
+                label: "",
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget categoryButton(String imagePath, String label) {
+    return Column(
+      children: [
+        ClipOval(
+          child: Image.asset(
+            imagePath,
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(height: 5),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+      ],
     );
   }
 }

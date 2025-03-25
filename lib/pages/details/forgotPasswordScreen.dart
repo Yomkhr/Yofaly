@@ -4,7 +4,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE8E8D8), // Couleur de fond
+      backgroundColor: Color(0xFFE8E8D8),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -19,10 +19,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: 20),
-            Image.asset(
-              'assets/images/logo.png',
-              height: 50,
-            ), // Remplacez par le logo
+            Image.asset('assets/images/logo.png', height: 50),
             SizedBox(height: 20),
             Text(
               'Forgot Your Password',
@@ -54,8 +51,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             ),
             SizedBox(height: 40),
             ElevatedButton(
-              onPressed:
-                  () {}, // Ajoutez la logique de récupération du mot de passe
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
                 shape: RoundedRectangleBorder(

@@ -4,20 +4,20 @@ class Presentation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFD634), // Jaune identique à l'image
+      backgroundColor: Color(0xFFFFD634),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 80), // Espace en haut pour les icônes de statut
+            SizedBox(height: 80),
             Text(
               'Get inspired with\nrecipes recommendations.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 24,
-                fontFamily: 'Serif', // Police cursive comme dans l'image
+                fontFamily: 'Serif',
                 fontWeight: FontWeight.normal,
                 fontStyle: FontStyle.italic,
               ),
@@ -32,9 +32,8 @@ class Presentation extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            Spacer(), // Pousse le bouton vers le bas
             Container(
-              width: double.infinity, // Bouton pleine largeur
+              width: double.infinity,
               margin: EdgeInsets.only(bottom: 40),
               child: ElevatedButton(
                 onPressed: () {

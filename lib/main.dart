@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => xx.LoginScreen(),
         '/signup': (context) => SignUpScreen(),
-        '/signup_success': (context) => SignUpSuccessPage(),
+        '/signup_success': (context) => SignUpScreen(),
         '/forgot_password': (context) => ForgotPasswordScreen(),
         '/accueil': (context) => Home(),
       },

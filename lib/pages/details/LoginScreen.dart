@@ -82,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-                  // Navigation vers la page de mot de passe oublié
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -96,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Navigation vers la page d'accueil après connexion
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),
@@ -118,7 +116,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text('Avez-vous un compte ? '),
                 GestureDetector(
                   onTap: () {
-                    // Navigation vers la page de création de compte
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SignUpScreen()),
