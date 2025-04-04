@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:yofaly/pages/details/desserts.dart';
-import 'package:yofaly/pages/details/categorie.dart';
-import 'package:yofaly/pages/details/favoris.dart';
-import 'package:yofaly/pages/details/historique.dart';
-import 'package:yofaly/pages/details/historique.dart';
-import 'package:yofaly/pages/details/favoris.dart';
-import 'package:yofaly/pages/details/notifications.dart';
-import 'package:yofaly/pages/details/profil.dart';
+import 'package:yofaly/screens/pages/details/desserts.dart';
+import 'package:yofaly/screens/pages/details/favoris.dart';
+import 'package:yofaly/screens/pages/details/historique.dart';
+import 'package:yofaly/screens/pages/details/notifications.dart';
+import 'package:yofaly/screens/pages/details/profil.dart';
+import 'package:yofaly/screens/pages/details/recipe1.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -30,7 +28,6 @@ class Home extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.person, color: Color(0xFFFFC107)),
             onPressed: () {
-              // la page Profil
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Profile()),
@@ -58,27 +55,55 @@ class Home extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          _buildCategoryButton(
-            context,
-            'assets/images/plat.jpg',
-            'Nos Plats',
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CategoriesPage(),
-              ), //  la page Plats
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CategoriesPage()),
+              );
+            },
+            child: Column(
+              children: [
+                ClipOval(
+                  child: Image.asset(
+                    'assets/images/plat.jpg',
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Nos Plats",
+                  style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
+                ),
+              ],
             ),
           ),
           SizedBox(height: 20),
-          _buildCategoryButton(
-            context,
-            'assets/images/dessert.jpg',
-            'Nos Desserts',
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Desserts(),
-              ), // la page Desserts
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Desserts()),
+              );
+            },
+            child: Column(
+              children: [
+                ClipOval(
+                  child: Image.asset(
+                    'assets/images/dessert.jpg',
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Nos Desserts",
+                  style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
+                ),
+              ],
             ),
           ),
         ],
@@ -92,7 +117,6 @@ class Home extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.home, color: Colors.black),
               onPressed: () {
-                //  la page Home
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => Home()),
@@ -102,7 +126,6 @@ class Home extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.history, color: Colors.black),
               onPressed: () {
-                //  Historique
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => historique()),
@@ -112,7 +135,6 @@ class Home extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.favorite_border, color: Colors.black),
               onPressed: () {
-                //  Favoris
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Favoris()),
@@ -122,7 +144,6 @@ class Home extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.notifications, color: Colors.black),
               onPressed: () {
-                //  Notifications
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => NotificationsPage()),
@@ -131,34 +152,6 @@ class Home extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryButton(
-    BuildContext context,
-    String imagePath,
-    String title,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          ClipOval(
-            child: Image.asset(
-              imagePath,
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
-          ),
-        ],
       ),
     );
   }
@@ -218,65 +211,82 @@ class CategoriesPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    categoryButton('assets/images/marocaine.jpg', 'Marocaine'),
-                    categoryButton(
-                      'assets/images/tunisienne.jpg',
-                      'Tunisienne',
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Recipe1()),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: Image.asset(
+                              'assets/images/marocaine.jpg',
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "Marocaine",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'DancingScript',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        ClipOval(
+                          child: Image.asset(
+                            'assets/images/tunisienne.jpg',
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Tunisienne",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'DancingScript',
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 SizedBox(height: 20),
-                categoryButton('assets/images/algerienne.jpg', 'Algérienne'),
+                Column(
+                  children: [
+                    ClipOval(
+                      child: Image.asset(
+                        'assets/images/algerienne.jpg',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Algérienne",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'DancingScript',
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          BottomNavigationBar(
-            backgroundColor: Colors.amber,
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home, color: Colors.black),
-                label: "",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history, color: Colors.black),
-                label: "",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite, color: Colors.black),
-                label: "",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.notifications, color: Colors.black),
-                label: "",
-              ),
-            ],
-          ),
         ],
       ),
-    );
-  }
-
-  Widget categoryButton(String imagePath, String label) {
-    return Column(
-      children: [
-        ClipOval(
-          child: Image.asset(
-            imagePath,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(height: 5),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
-        ),
-      ],
     );
   }
 }

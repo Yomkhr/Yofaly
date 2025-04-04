@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yofaly/pages/home/home.dart';
+import 'package:yofaly/screens/pages/home/home.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
