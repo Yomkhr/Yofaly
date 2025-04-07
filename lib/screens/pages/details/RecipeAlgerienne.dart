@@ -3,28 +3,28 @@ import 'package:flutter/material.dart';
 class RecipeAlgerienne extends StatelessWidget {
   final List<Map<String, dynamic>> recettes = [
     {
-      'image': 'assets/mtewem.jpg',
+      'image': 'assets/images/mtewem.jpg',
       'nom': 'Mtewem',
       'temps': '1h 40min',
       'categorie': 'Algérienne',
       'niveau': 'Facile',
     },
     {
-      'image': 'assets/lham_lahlou.jpg',
+      'image': 'assets/images/lham_lahlou.jpg',
       'nom': 'Lham lahlou',
       'temps': '1h',
       'categorie': 'Algérienne',
       'niveau': 'Intermédiaire',
     },
     {
-      'image': 'assets/berkoukes.jpg',
+      'image': 'assets/images/berkoukes.jpg',
       'nom': 'Berkoukes',
       'temps': '40 min',
       'categorie': 'Algérienne',
       'niveau': 'Facile',
     },
     {
-      'image': 'assets/couscous_algerien.jpg',
+      'image': 'assets/images/couscous_algerien.jpg',
       'nom': 'Couscous algérien',
       'temps': '2h',
       'categorie': 'Algérienne',
@@ -43,7 +43,7 @@ class RecipeAlgerienne extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: Colors.yellow),
           onPressed: () {},
         ),
-        title: Image.asset('assets/logo.png', height: 40),
+        title: Image.asset('assets/images/logo.png', height: 40),
         centerTitle: true,
         actions: [Icon(Icons.battery_full, color: Colors.black)],
       ),

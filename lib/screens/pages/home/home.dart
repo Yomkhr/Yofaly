@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:yofaly/screens/pages/details/Ingredient.dart';
+import 'package:yofaly/screens/pages/details/RecipeAlgerienne.dart';
 import 'package:yofaly/screens/pages/details/RecipeMarocaine.dart';
+import 'package:yofaly/screens/pages/details/RecipeTunisienne.dart';
 import 'package:yofaly/screens/pages/details/desserts.dart';
 import 'package:yofaly/screens/pages/details/favoris.dart';
 import 'package:yofaly/screens/pages/details/historique.dart';
@@ -82,6 +84,8 @@ class Home extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
+
+          // === BOUTON DESSERTS : Redirection vers la page Dessert ===
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -107,6 +111,7 @@ class Home extends StatelessWidget {
               ],
             ),
           ),
+          // === FIN BOUTON DESSERTS ===
         ],
       ),
       bottomNavigationBar: Container(
@@ -209,88 +214,23 @@ class CategoriesPage extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                // Section Marocaine
-                _buildCategorySection(
+                _buildCategoryItem(
                   context,
                   'Marocaine',
                   'assets/images/marocaine.jpg',
-                  [
-                    {
-                      'name': 'Tajine',
-                      'image': 'assets/images/tajine.jpg',
-                      'ingredients': [
-                        'Poulet',
-                        'Oignons',
-                        'Citron confit',
-                        'Olives',
-                        'Épices marocaines',
-                      ],
-                      'preparation': 'Préparation du tajine...',
-                    },
-                    {
-                      'name': 'Couscous',
-                      'image': 'assets/images/couscous.jpg',
-                      'ingredients': ['Semoule', 'Légumes', 'Viande', 'Épices'],
-                      'preparation': 'Préparation du couscous...',
-                    },
-                  ],
+                  Recipemarocaine(),
                 ),
-
-                // Section Tunisienne
-                _buildCategorySection(
+                _buildCategoryItem(
                   context,
                   'Tunisienne',
                   'assets/images/tunisienne.jpg',
-                  [
-                    {
-                      'name': 'Brik',
-                      'image': 'assets/images/brik.jpg',
-                      'ingredients': [
-                        'Feuille de brick',
-                        'Oeuf',
-                        'Thon',
-                        'Persil',
-                      ],
-                      'preparation': 'Préparation du brik...',
-                    },
-                    {
-                      'name': 'Lablabi',
-                      'image': 'assets/images/lablabi.jpg',
-                      'ingredients': ['Pois chiches', 'Ail', 'Cumin', 'Pain'],
-                      'preparation': 'Préparation du lablabi...',
-                    },
-                  ],
+                  Recipetunisienne(),
                 ),
-
-                // Section Algérienne
-                _buildCategorySection(
+                _buildCategoryItem(
                   context,
                   'Algérienne',
                   'assets/images/algerienne.jpg',
-                  [
-                    {
-                      'name': 'Chakhchoukha',
-                      'image': 'assets/images/chakhchoukha.jpg',
-                      'ingredients': [
-                        'Msemen',
-                        'Sauce tomate',
-                        'Viande',
-                        'Épices',
-                      ],
-                      'preparation': 'Préparation de la chakhchoukha...',
-                    },
-                    {
-                      'name': 'Rechta',
-                      'image': 'assets/images/rechta.jpg',
-                      'ingredients': [
-                        'Pâtes maison',
-                        'Poulet',
-                        'Pois chiches',
-                        'Sauce blanche',
-                      ],
-                      'preparation': 'Préparation de la rechta...',
-                    },
-                  ],
+                  RecipeAlgerienne(),
                 ),
               ],
             ),
@@ -300,72 +240,36 @@ class CategoriesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategorySection(
+  Widget _buildCategoryItem(
     BuildContext context,
     String title,
     String imagePath,
-    List<Map<String, dynamic>> recipes,
+    Widget destinationPage,
   ) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            // Vous pouvez garder cette navigation ou la supprimer si vous préférez
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Recipemarocaine()),
-            );
-          },
-          child: Column(
-            children: [
-              ClipOval(
-                child: Image.asset(
-                  imagePath,
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                title,
-                style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10),
-        ...recipes.map((recipe) => _buildRecipeCard(context, recipe)).toList(),
-        SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget _buildRecipeCard(BuildContext context, Map<String, dynamic> recipe) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: Image.asset(
-          recipe['image'],
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-        ),
-        title: Text(recipe['name']),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => Ingredient(
-                    recipeName: recipe['name'],
-                    imagePath: recipe['image'],
-                    ingredients: List<String>.from(recipe['ingredients']),
-                    preparation: recipe['preparation'],
-                  ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destinationPage),
+        );
+      },
+      child: Column(
+        children: [
+          ClipOval(
+            child: Image.asset(
+              imagePath,
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
             ),
-          );
-        },
+          ),
+          SizedBox(height: 8),
+          Text(
+            title,
+            style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
+          ),
+          SizedBox(height: 20),
+        ],
       ),
     );
   }
