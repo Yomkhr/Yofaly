@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yofaly/core/api_service.dart';
 import 'loginScreen.dart';
 import 'signupSuccess.dart';
 
@@ -8,13 +10,56 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignupScreen> {
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
+  final _formKey = GlobalKey<FormState>();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  String err = '';
+
+  Future<void> signup() async {
+    try {
+      if (passwordController.text != confirmPasswordController.text) {
+        setState(() {
+          err = 'Les mots de passe ne correspondent pas';
+        });
+        return;
+      }
+
+      final response = await ApiService().signup(
+        fullNameController.text.trim(),
+        emailController.text.trim(),
+        passwordController.text.trim(),
+      );
+
+      if (response.statusCode == 201) {
+        final data = response.data;
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('_id', data['_id']);
+        await prefs.setString('fullName', data['fullName']);
+        await prefs.setString('email', data['email']);
+        await prefs.setString('token', data['token']);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpSuccess()),
+        );
+      } else {
+        setState(() {
+          err = response.data["message"] ?? "Erreur lors de l'inscription";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        err = "Erreur lors de la connexion au serveur";
+      });
+      print('Erreur Signup: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +77,7 @@ class _SignUpScreenState extends State<SignupScreen> {
                 SizedBox(height: 20),
                 Text(
                   'Créer Un Compte',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
 
@@ -44,12 +85,11 @@ class _SignUpScreenState extends State<SignupScreen> {
                   label: 'Nom Complet',
                   hint: 'John Doe',
                   controller: fullNameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer votre nom complet';
-                    }
-                    return null;
-                  },
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty
+                              ? 'Veuillez entrer votre nom complet'
+                              : null,
                 ),
 
                 _buildLabeledTextField(
@@ -106,24 +146,14 @@ class _SignUpScreenState extends State<SignupScreen> {
                   },
                 ),
 
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                    "En continuant, vous acceptez les Conditions d'utilisation et la Politique de confidentialité.",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontSize: 12, color: Colors.black54),
-                  ),
-                ),
+                if (err.isNotEmpty)
+                  Text(err, style: TextStyle(color: Colors.red)),
 
+                SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignUpSuccess(),
-                        ),
-                      );
+                      signup();
                     }
                   },
                   style: ElevatedButton.styleFrom(

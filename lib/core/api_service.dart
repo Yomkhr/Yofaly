@@ -47,4 +47,6 @@ class ApiService {
         return 'Erreur inconnue: ${error.message}';
     }
   }
+
+  signup(trim, trim2, trim3) {}
 }
