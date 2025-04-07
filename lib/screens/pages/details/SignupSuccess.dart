@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:yofaly/screens/pages/home/home.dart';
 
-class SignUpSuccess extends StatelessWidget {
+// Remplace ceci par l'import de ta page d'accueil
+
+class SignUpSuccess extends StatefulWidget {
+  @override
+  _SignUpSuccessState createState() => _SignUpSuccessState();
+}
+
+class _SignUpSuccessState extends State<SignUpSuccess> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Attendre 2 secondes puis naviguer vers la HomePage sans possibilité de revenir
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => Home()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(
-        0xFFF7F8ED,
-      ), // Même couleur de fond que SignUpScreen
+      backgroundColor: Color(0xFFF7F8ED),
       body: Stack(
         children: [
-          // Contenu principal (le formulaire en arrière-plan)
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.4, // Assombrit légèrement l'arrière-plan
-              child: Container(color: Colors.black),
-            ),
+            child: Opacity(opacity: 0.4, child: Container(color: Colors.black)),
           ),
-
-          // La boîte blanche de succès
           Center(
             child: Container(
               width: 250,
@@ -30,7 +42,6 @@ class SignUpSuccess extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Icône utilisateur dans un cercle
                   Container(
                     padding: EdgeInsets.all(15),
                     decoration: BoxDecoration(
@@ -40,8 +51,6 @@ class SignUpSuccess extends StatelessWidget {
                     child: Icon(Icons.person, size: 40, color: Colors.white),
                   ),
                   SizedBox(height: 15),
-
-                  // Texte "Sign Up Successful!"
                   Text(
                     'Sign Up\nSuccessful!',
                     textAlign: TextAlign.center,
@@ -52,11 +61,13 @@ class SignUpSuccess extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 15),
-
-                  // Bouton Continuer
+                  // Optionnel : tu peux cacher le bouton si la redirection est automatique
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context); // Ferme la page de succès
+                      // Même si cliqué, aller à Home sans retour possible
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => Home()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.amber[700],

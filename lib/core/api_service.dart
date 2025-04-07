@@ -35,6 +35,26 @@ class ApiService {
     }
   }
 
+  Future<Response> signup(
+    String fullName,
+    String email,
+    String password,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '/users/register',
+        data: {'username': fullName, 'email': email, 'password': password},
+      );
+      return response;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return e.response!;
+      } else {
+        rethrow;
+      }
+    }
+  }
+
   String _handleError(DioError error) {
     switch (error.type) {
       case DioErrorType.connectionTimeout:
@@ -47,6 +67,4 @@ class ApiService {
         return 'Erreur inconnue: ${error.message}';
     }
   }
-
-  signup(trim, trim2, trim3) {}
 }

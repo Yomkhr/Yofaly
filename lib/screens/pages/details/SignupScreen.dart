@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignupScreen> {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('_id', data['_id']);
-        await prefs.setString('fullName', data['fullName']);
+        await prefs.setString('fullName', data['username']);
         await prefs.setString('email', data['email']);
         await prefs.setString('token', data['token']);
 
