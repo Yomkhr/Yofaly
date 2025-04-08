@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yofaly/screens/pages/details/favoris.dart';
+import 'package:yofaly/screens/pages/details/historique.dart';
 import 'package:yofaly/screens/pages/details/notifications.dart';
 import 'package:yofaly/screens/pages/details/recette1tun.dart';
 import 'package:yofaly/screens/pages/details/recette2tun.dart';
@@ -189,7 +190,7 @@ class Recipetunisienne extends StatelessWidget {
             case 1:
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => Historique()),
+                MaterialPageRoute(builder: (_) => historique()),
               );
               break;
             case 2:

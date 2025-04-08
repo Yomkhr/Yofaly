@@ -84,8 +84,6 @@ class Home extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-
-          // === BOUTON DESSERTS : Redirection vers la page Dessert ===
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -111,7 +109,6 @@ class Home extends StatelessWidget {
               ],
             ),
           ),
-          // === FIN BOUTON DESSERTS ===
         ],
       ),
       bottomNavigationBar: Container(
@@ -212,25 +209,26 @@ class CategoriesPage extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: ListView(
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+              padding: EdgeInsets.all(16),
               children: [
-                _buildCategoryItem(
+                _buildCategoryCircle(
                   context,
                   'Marocaine',
                   'assets/images/marocaine.jpg',
-                  Recipemarocaine(),
                 ),
-                _buildCategoryItem(
+                _buildCategoryCircle(
                   context,
                   'Tunisienne',
                   'assets/images/tunisienne.jpg',
-                  Recipetunisienne(),
                 ),
-                _buildCategoryItem(
+                _buildCategoryCircle(
                   context,
                   'Algérienne',
                   'assets/images/algerienne.jpg',
-                  RecipeAlgerienne(),
                 ),
               ],
             ),
@@ -240,26 +238,39 @@ class CategoriesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryItem(
+  Widget _buildCategoryCircle(
     BuildContext context,
     String title,
     String imagePath,
-    Widget destinationPage,
   ) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => destinationPage),
-        );
+        // Navigation vers la page correspondante
+        if (title == 'Marocaine') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Recipemarocaine()),
+          );
+        } else if (title == 'Tunisienne') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Recipetunisienne()),
+          );
+        } else if (title == 'Algérienne') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RecipeAlgerienne()),
+          );
+        }
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipOval(
             child: Image.asset(
               imagePath,
-              width: 120,
-              height: 120,
+              width: 100,
+              height: 100,
               fit: BoxFit.cover,
             ),
           ),
@@ -268,7 +279,6 @@ class CategoriesPage extends StatelessWidget {
             title,
             style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
           ),
-          SizedBox(height: 20),
         ],
       ),
     );

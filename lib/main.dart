@@ -61,22 +61,22 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
-    checkLoginStatus();
+    Future.delayed(const Duration(seconds: 3), () {
+      checkLoginStatus();
+    });
   }
 
   Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
-    Future.delayed(const Duration(seconds: 3), () {
-      if (token != null && token.isNotEmpty) {
-        // Si un token existe, aller à la HomePage
-        Navigator.pushReplacementNamed(context, '/accueil');
-      } else {
-        // Sinon, aller à la page de connexion
-        Navigator.pushReplacementNamed(context, '/login');
-      }
-    });
+    if (token != null && token.isNotEmpty) {
+      // Si un token existe, aller à la HomePage
+      Navigator.pushReplacementNamed(context, '/accueil');
+    } else {
+      // Sinon, aller à la page de connexion
+      Navigator.pushReplacementNamed(context, '/login');
+    }
   }
 
   @override

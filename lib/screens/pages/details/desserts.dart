@@ -8,10 +8,93 @@ class Desserts extends StatefulWidget {
 class _DessertState extends State<Desserts> {
   String? selectedCategory;
 
-  final Map<String, List<String>> dessertRecipes = {
-    'Marocaine': ['Cornes de gazelle', 'Chebakia', 'Sellou'],
-    'Tunisienne': ['Baklawa', 'Zriga', 'Yo-yo'],
-    'Algérienne': ['Makroud', 'Kalb el louz', 'Griwech'],
+  final Map<String, List<Map<String, String>>> dessertRecipes = {
+    'Marocaine': [
+      {
+        'name': 'Chebakya',
+        'image': 'assets/images/chebakya.jpg',
+        'duration': '1h 40min',
+        'difficulty': 'Facile',
+      },
+      {
+        'name': 'Kaab loghzal louz',
+        'image': 'assets/images/kaab loghzal louz.jpg',
+        'duration': '1h',
+        'difficulty': 'Intermédiaire',
+      },
+      {
+        'name': 'Fekkas marocain',
+        'image': 'assets/images/fekkas marocain.jpg',
+        'duration': '2h',
+        'difficulty': 'Intermédiaire',
+      },
+      {
+        'name': 'ghraiba à semoule et noix de coco',
+        'image': 'assets/images/ghraiba à semoule et noix de coco.jpg',
+        'duration': '2h',
+        'difficulty': 'Facile',
+      },
+    ],
+
+    'Algérienne': [
+      {
+        'name': 'kalab elouz',
+        'image': 'assets/images/kalab elouz.jpg',
+        'duration': '1h 40min',
+        'difficulty': 'Facile',
+      },
+      {
+        'name': 'mhalbi',
+        'image': 'assets/images/mhalbi.jpg',
+        'duration': '1h',
+        'difficulty': 'Intermédiaire',
+      },
+      {
+        'name': 'makrout amandes',
+        'image': 'assets/images/makrout amandes.jpg',
+        'duration': '2h',
+        'difficulty': 'Intermédiaire',
+      },
+      {
+        'name': 'baklawa',
+        'image': 'assets/images/baklawa.jpg',
+        'duration': '2h',
+        'difficulty': 'Facile',
+      },
+    ],
+
+    'Tunisienne': [
+      {
+        'name': 'Kaak warka',
+        'image': 'assets/images/Kaak warka.jpg',
+        'duration': '1h 40min',
+        'difficulty': 'Facile',
+      },
+      {
+        'name': 'zelabia',
+        'image': 'assets/images/zelabia.jpg',
+        'duration': '1h',
+        'difficulty': 'Intermédiaire',
+      },
+      {
+        'name': 'baklawa tunisienne',
+        'image': 'assets/images/baklawa tunisienne.jpg',
+        'duration': '2h',
+        'difficulty': 'Intermédiaire',
+      },
+      {
+        'name': 'zouza tunisienne',
+        'image': 'assets/images/zouza tunisienne.jpg',
+        'duration': '2h',
+        'difficulty': 'Facile',
+      },
+      {
+        'name': 'mkharek',
+        'image': 'assets/images/mkharek.jpg',
+        'duration': '2h',
+        'difficulty': 'Facile',
+      },
+    ],
   };
 
   Widget buildCategoryButton(String category, String assetPath) {
@@ -23,20 +106,17 @@ class _DessertState extends State<Desserts> {
               selectedCategory = category;
             });
           },
-          child: CircleAvatar(
-            radius: 60,
-            backgroundImage: AssetImage(assetPath),
+          child: ClipOval(
+            child: Image.asset(
+              assetPath,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         const SizedBox(height: 8),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(category, style: TextStyle(fontFamily: 'Cursive')),
-        ),
+        Text(category, style: TextStyle(fontFamily: 'Cursive', fontSize: 16)),
       ],
     );
   }
@@ -47,22 +127,66 @@ class _DessertState extends State<Desserts> {
     return Column(
       children:
           recipes.map((recipe) {
-            return Card(
-              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: ListTile(
-                title: Text(recipe),
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    // Action du bouton
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Tu as cliqué sur "$recipe"')),
-                    );
-                  },
-                  child: Text("Voir"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.yellow[700],
+            return Container(
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      bottomLeft: Radius.circular(12),
+                    ),
+                    child: Image.asset(
+                      recipe['image']!,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            recipe['name']!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Icon(Icons.access_time, size: 16),
+                              SizedBox(width: 4),
+                              Text(recipe['duration']!),
+                            ],
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            category,
+                            style: TextStyle(color: Colors.amber[700]),
+                          ),
+                          Text(
+                            recipe['difficulty']!,
+                            style: TextStyle(color: Colors.amber[700]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12, right: 12),
+                    child: Icon(Icons.favorite_border, color: Colors.amber),
+                  ),
+                ],
               ),
             );
           }).toList(),
@@ -76,7 +200,7 @@ class _DessertState extends State<Desserts> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Image.asset('assets/logo.png', height: 40), // Ton logo YOFALY
+        title: Image.asset('assets/images/logo.png', height: 40),
         centerTitle: true,
       ),
       body: Column(
@@ -91,13 +215,19 @@ class _DessertState extends State<Desserts> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                buildCategoryButton('Marocaine', 'assets/maroc.png'),
-                buildCategoryButton('Tunisienne', 'assets/tunisie.png'),
+                buildCategoryButton('Marocaine', 'assets/images/marocaine.jpg'),
+                buildCategoryButton(
+                  'Tunisienne',
+                  'assets/images/tunisienne.jpg',
+                ),
               ],
             ),
             SizedBox(height: 30),
             Center(
-              child: buildCategoryButton('Algérienne', 'assets/algerie.png'),
+              child: buildCategoryButton(
+                'Algérienne',
+                'assets/images/algerienne.jpg',
+              ),
             ),
           ] else ...[
             Padding(
