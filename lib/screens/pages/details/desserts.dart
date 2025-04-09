@@ -30,7 +30,7 @@ class _DessertState extends State<Desserts> {
       },
       {
         'name': 'ghraiba à semoule et noix de coco',
-        'image': 'assets/images/ghraiba à semoule et noix de coco.jpg',
+        'image': 'assets/images/ghraiba.jpg',
         'duration': '2h',
         'difficulty': 'Facile',
       },

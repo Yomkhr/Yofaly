@@ -6,7 +6,6 @@ import 'package:yofaly/screens/pages/details/SignupScreen.dart';
 import 'package:yofaly/screens/pages/details/SignupSuccess.dart';
 import 'package:yofaly/screens/pages/details/ForgotPasswordScreen.dart';
 import 'package:yofaly/screens/pages/home/home.dart';
-import 'package:yofaly/screens/pages/details/WelcomeScreen.dart';
 import 'package:yofaly/providers/produit_provider.dart'; // Importez votre Provider
 
 void main() {
@@ -71,6 +70,8 @@ class _WelcomePageState extends State<WelcomePage> {
     String? token = prefs.getString('token');
 
     if (token != null && token.isNotEmpty) {
+      // get favorite lis
+
       // Si un token existe, aller à la HomePage
       Navigator.pushReplacementNamed(context, '/accueil');
     } else {

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:yofaly/core/api_service.dart';
+import 'package:yofaly/core/favorite_service.dart';
 import 'package:yofaly/screens/pages/details/SignupScreen.dart';
 import 'package:yofaly/screens/pages/details/forgotPasswordScreen.dart';
 import 'package:yofaly/screens/pages/home/home.dart';
@@ -56,6 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.setString('username', data['username']);
         await prefs.setString('email', data['email']);
         await prefs.setString('token', data['token']);
+
+        // get favorites item
+        await FavoriteService.syncFavoritesWithSharedPrefs(); // Sync on launch
 
         print('Données sauvegardées avec succès');
         loadUserData();

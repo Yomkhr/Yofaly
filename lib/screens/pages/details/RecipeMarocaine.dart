@@ -1,52 +1,119 @@
 import 'package:flutter/material.dart';
+import 'package:yofaly/core/api_service.dart';
+import 'package:yofaly/core/favorite_service.dart';
+import 'package:yofaly/screens/pages/details/RecipeDetails.dart';
 
-// PAGE PRINCIPALE
-class Recipemarocaine extends StatelessWidget {
-  final List<Map<String, dynamic>> recettes = [
-    {
-      'image': 'assets/images/pastilla poulet.jpg',
-      'nom': 'Pastilla poulet',
-      'temps': '1h 40min',
-      'categorie': 'Marocaine',
-      'niveau': 'Facile',
-    },
-    {
-      'image': 'assets/images/tajine poulet.jpg',
-      'nom': 'Tajine poulet',
-      'temps': '1h',
-      'categorie': 'Marocaine',
-      'niveau': 'Intermédiaire',
-    },
-    {
-      'image': 'assets/images/Couscous Marocain.jpg',
-      'nom': 'Couscous Marocain',
-      'temps': '2h',
-      'categorie': 'Marocaine',
-      'niveau': 'Intermédiaire',
-    },
-    {
-      'image': 'assets/images/Tajine viande pomme de terre.jpg',
-      'nom': 'Tajine viande pomme de terre',
-      'temps': '40min',
-      'categorie': 'Marocaine',
-      'niveau': 'Facile',
-    },
-  ];
+class Recipemarocaine extends StatefulWidget {
+  final String origin;
+
+  const Recipemarocaine({Key? key, required this.origin}) : super(key: key);
+
+  @override
+  _RecipemarocaineState createState() => _RecipemarocaineState();
+}
+
+class _RecipemarocaineState extends State<Recipemarocaine> {
+  List<Map<String, dynamic>> recettes = [];
+  List<Map<String, dynamic>> filteredRecettes = []; // For search results
+  TextEditingController searchController = TextEditingController(); // Add this
+
+  List<String> favoriteIds = [];
+
+  bool isLoading = true;
+
+  getRecipes() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      dynamic response = await ApiService().getRecipesByOrigin(widget.origin);
+      // dynamic response = await ApiService().getRecipes();
+
+      favoriteIds = await FavoriteService.getFavoriteIds();
+      // Assuming response is a List of Maps
+      recettes = List<Map<String, dynamic>>.from(response);
+      filteredRecettes = recettes; // Initialize filtered list with all recipes
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Please contact your System Administrator");
+      setState(() {
+        isLoading = false;
+      });
+      return [];
+    }
+  }
+
+  // Add this search function
+  void searchRecipes(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        filteredRecettes = recettes;
+      });
+      return;
+    }
+
+    setState(() {
+      filteredRecettes =
+          recettes.where((recette) {
+            return recette['title'].toString().toLowerCase().contains(
+              query.toLowerCase(),
+            );
+          }).toList();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getRecipes();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose(); // Dispose the controller
+    super.dispose();
+  }
+
+  void toggleFavorite(String id) async {
+    bool isFav = favoriteIds.contains(id);
+    if (isFav) {
+      await FavoriteService.removeFavorite(id);
+      favoriteIds.remove(id);
+    } else {
+      await FavoriteService.addFavorite(id);
+      favoriteIds.add(id);
+    }
+    setState(() {});
+  }
+
+  String getPreparationLevel(dynamic preptime) {
+    if (preptime == null) return 'Inconnu';
+
+    int time = int.tryParse(preptime.toString()) ?? 0;
+
+    if (time < 25) {
+      return 'Facile';
+    } else if (time >= 25 && time <= 60) {
+      return 'Moyen';
+    } else {
+      return 'Difficile';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFECEAD6),
       appBar: AppBar(
-        backgroundColor: Color(0xFFFFC107), // Jaune comme dans la capture
+        backgroundColor: Color(0xFFECEAD6),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context); // Retour à la page précédente
-          },
+          icon: Icon(Icons.arrow_back, color: Colors.yellow),
+          onPressed: () {},
         ),
-        title: Image.asset('assets/images/logo.png', height: 40),
+        title: Image.asset('assets/logo.png', height: 40),
         centerTitle: true,
         actions: [Icon(Icons.battery_full, color: Colors.black)],
       ),
@@ -55,6 +122,7 @@ class Recipemarocaine extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: TextField(
+              controller: searchController,
               decoration: InputDecoration(
                 hintText: 'Quel Recette Vous Souhaitez...',
                 filled: true,
@@ -63,114 +131,130 @@ class Recipemarocaine extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
                 ),
+                prefixIcon: Icon(Icons.search),
+                suffixIcon:
+                    searchController.text.isNotEmpty
+                        ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                            searchRecipes('');
+                          },
+                        )
+                        : null,
               ),
+              onChanged: searchRecipes,
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: recettes.length,
-              itemBuilder: (context, index) {
-                final recette = recettes[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) =>
-                                getRecettePage(index), // Va vers RecetteXMaroc
-                      ),
-                    );
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12),
+            child:
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                      itemCount: filteredRecettes.length,
+                      itemBuilder: (context, index) {
+                        final recette = filteredRecettes[index];
+                        final id = recette['_id'];
+                        final isFav = favoriteIds.contains(id);
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Image.asset(
-                            recette['image'],
-                            width: 120,
-                            height: 100,
-                            fit: BoxFit.cover,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          RecipeDetails(recette: recette),
+                                ),
+                              );
+                            },
+                            child: Row(
                               children: [
-                                Text(
-                                  recette['nom'],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    bottomLeft: Radius.circular(12),
+                                  ),
+                                  child: Image.asset(
+                                    recette['image'] ??
+                                        'assets/images/logo.png',
+                                    width: 120,
+                                    height: 100,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                SizedBox(height: 5),
-                                Row(
-                                  children: [
-                                    Icon(Icons.access_time, size: 16),
-                                    SizedBox(width: 5),
-                                    Text(recette['temps']),
-                                  ],
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          recette['title'],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.access_time, size: 16),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              recette['preptime'].toString(),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          recette['origins'][0],
+                                          style: TextStyle(
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                        Text(
+                                          getPreparationLevel(
+                                            recette['preptime'],
+                                          ),
+                                          style: TextStyle(
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
-                                  recette['categorie'],
-                                  style: TextStyle(color: Colors.orange),
-                                ),
-                                Text(
-                                  recette['niveau'],
-                                  style: TextStyle(color: Colors.orange),
+                                IconButton(
+                                  icon: Icon(
+                                    isFav
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color: Colors.yellow,
+                                  ),
+                                  onPressed: () => toggleFavorite(id),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.favorite_border,
-                            color: Colors.yellow,
-                          ),
-                          onPressed: () {},
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFFFFC107), // Jaune
+        backgroundColor: Colors.yellow,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, '/home');
-              break;
-            case 1:
-              Navigator.pushNamed(context, '/historique');
-              break;
-            case 2:
-              Navigator.pushNamed(context, '/favoris');
-              break;
-            case 3:
-              Navigator.pushNamed(context, '/notifications');
-              break;
-          }
-        },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.restore), label: ''),
@@ -178,63 +262,6 @@ class Recipemarocaine extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
         ],
       ),
-    );
-  }
-
-  // Fonction pour retourner la bonne page selon l’index
-  Widget getRecettePage(int index) {
-    switch (index) {
-      case 0:
-        return Recette1Maroc();
-      case 1:
-        return Recette2Maroc();
-      case 2:
-        return Recette3Maroc();
-      case 3:
-        return Recette4Maroc();
-      default:
-        return Recette1Maroc();
-    }
-  }
-}
-
-// EXEMPLES DE PAGES DE RECETTES (à créer dans tes fichiers séparés)
-class Recette1Maroc extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Recette 1")),
-      body: Center(child: Text("Contenu de la Recette 1")),
-    );
-  }
-}
-
-class Recette2Maroc extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Recette 2")),
-      body: Center(child: Text("Contenu de la Recette 2")),
-    );
-  }
-}
-
-class Recette3Maroc extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Recette 3")),
-      body: Center(child: Text("Contenu de la Recette 3")),
-    );
-  }
-}
-
-class Recette4Maroc extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Recette 4")),
-      body: Center(child: Text("Contenu de la Recette 4")),
     );
   }
 }

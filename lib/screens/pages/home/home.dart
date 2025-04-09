@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yofaly/screens/pages/details/Ingredient.dart';
-import 'package:yofaly/screens/pages/details/RecipeAlgerienne.dart';
 import 'package:yofaly/screens/pages/details/RecipeMarocaine.dart';
-import 'package:yofaly/screens/pages/details/RecipeTunisienne.dart';
 import 'package:yofaly/screens/pages/details/desserts.dart';
 import 'package:yofaly/screens/pages/details/favoris.dart';
 import 'package:yofaly/screens/pages/details/historique.dart';
@@ -209,26 +206,94 @@ class CategoriesPage extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-              padding: EdgeInsets.all(16),
+            child: ListView(
               children: [
-                _buildCategoryCircle(
+                // Section Marocaine
+                _buildCategorySection(
                   context,
                   'Marocaine',
+                  'Maroc',
                   'assets/images/marocaine.jpg',
+
+                  [
+                    {
+                      'name': 'Tajine',
+                      'image': 'assets/images/tajine.png',
+                      'ingredients': [
+                        'Poulet',
+                        'Oignons',
+                        'Citron confit',
+                        'Olives',
+                        'Épices marocaines',
+                      ],
+                      'preparation': 'Préparation du tajine...',
+                    },
+                    {
+                      'name': 'Couscous',
+                      'image': 'assets/images/Couscous Marocain.jpeg',
+                      'ingredients': ['Semoule', 'Légumes', 'Viande', 'Épices'],
+                      'preparation': 'Préparation du couscous...',
+                    },
+                  ],
                 ),
-                _buildCategoryCircle(
+
+                // Section Tunisienne
+                _buildCategorySection(
                   context,
                   'Tunisienne',
+                  'Tunisie',
                   'assets/images/tunisienne.jpg',
+                  [
+                    {
+                      'name': 'Brik',
+                      'image': 'assets/images/brik.jpg',
+                      'ingredients': [
+                        'Feuille de brick',
+                        'Oeuf',
+                        'Thon',
+                        'Persil',
+                      ],
+                      'preparation': 'Préparation du brik...',
+                    },
+                    {
+                      'name': 'Lablabi',
+                      'image': 'assets/images/lablabi.jpg',
+                      'ingredients': ['Pois chiches', 'Ail', 'Cumin', 'Pain'],
+                      'preparation': 'Préparation du lablabi...',
+                    },
+                  ],
                 ),
-                _buildCategoryCircle(
+
+                // Section Algérienne
+                _buildCategorySection(
                   context,
                   'Algérienne',
+                  'Algérie',
                   'assets/images/algerienne.jpg',
+                  [
+                    {
+                      'name': 'Chakhchoukha',
+                      'image': 'assets/images/chakhchoukha.jpg',
+                      'ingredients': [
+                        'Msemen',
+                        'Sauce tomate',
+                        'Viande',
+                        'Épices',
+                      ],
+                      'preparation': 'Préparation de la chakhchoukha...',
+                    },
+                    {
+                      'name': 'Rechta',
+                      'image': 'assets/images/rechta.jpg',
+                      'ingredients': [
+                        'Pâtes maison',
+                        'Poulet',
+                        'Pois chiches',
+                        'Sauce blanche',
+                      ],
+                      'preparation': 'Préparation de la rechta...',
+                    },
+                  ],
                 ),
               ],
             ),
@@ -238,48 +303,92 @@ class CategoriesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryCircle(
+  Widget _buildCategorySection(
     BuildContext context,
     String title,
+    String origin,
     String imagePath,
+    List<Map<String, dynamic>> recipes,
   ) {
-    return GestureDetector(
-      onTap: () {
-        // Navigation vers la page correspondante
-        if (title == 'Marocaine') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Recipemarocaine()),
-          );
-        } else if (title == 'Tunisienne') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Recipetunisienne()),
-          );
-        } else if (title == 'Algérienne') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => RecipeAlgerienne()),
-          );
-        }
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipOval(
-            child: Image.asset(
-              imagePath,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+    print(imagePath);
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            // Vous pouvez garder cette navigation ou la supprimer si vous préférez
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Recipemarocaine(origin: origin),
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              ClipOval(
+                child: Image.asset(
+                  imagePath,
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
+              ),
+            ],
           ),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(fontSize: 18, fontFamily: 'DancingScript'),
-          ),
-        ],
+        ),
+        SizedBox(height: 10),
+        ...recipes.map((recipe) => _buildRecipeCard(context, recipe)).toList(),
+        SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildRecipeCard(BuildContext context, Map<String, dynamic> recipe) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListTile(
+        leading: FutureBuilder(
+          future: Future.delayed(
+            Duration(milliseconds: 100),
+          ), // simulate slight delay
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SizedBox(
+                width: 50,
+                height: 50,
+                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              );
+            } else {
+              return Image.asset(
+                recipe['image'],
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              );
+            }
+          },
+        ),
+
+        title: Text(recipe['name']),
+        onTap: () {
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder:
+          //         (context) => RecipeDetails(
+          //           recipeName: recipe['name'],
+          //           imagePath: recipe['image'],
+          //           ingredients: List<String>.from(recipe['ingredients']),
+          //           preparation: recipe['preparation'],
+          //         ),
+          //   ),
+          // );
+        },
       ),
     );
   }
