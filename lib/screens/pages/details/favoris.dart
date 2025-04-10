@@ -9,9 +9,11 @@ class Favoris extends StatefulWidget {
 
 class _FavorisState extends State<Favoris> {
   List<Map<String, dynamic>> recettes = [];
+  List<Map<String, dynamic>> filteredRecettes = [];
+  TextEditingController searchController = TextEditingController();
   List<String> favoriteIds = [];
-
   bool isLoading = true;
+  int _selectedIndex = 1;
 
   getRecipes() async {
     setState(() {
@@ -19,8 +21,8 @@ class _FavorisState extends State<Favoris> {
     });
     try {
       dynamic response = await ApiService().getFavorite();
-      // Assuming response is a List of Maps
       recettes = List<Map<String, dynamic>>.from(response);
+      filteredRecettes = recettes;
       setState(() {
         isLoading = false;
       });
@@ -33,32 +35,66 @@ class _FavorisState extends State<Favoris> {
     }
   }
 
+  void searchRecipes(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        filteredRecettes = recettes;
+      });
+      return;
+    }
+
+    setState(() {
+      filteredRecettes =
+          recettes.where((recette) {
+            return recette['title'].toString().toLowerCase().contains(
+              query.toLowerCase(),
+            );
+          }).toList();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getRecipes();
+    searchController.addListener(() {
+      searchRecipes(searchController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   void removeFavorite(String id) async {
     await FavoriteService.removeFavorite(id);
     favoriteIds.remove(id);
-    // Also remove from the local recipe list
     recettes.removeWhere((item) => item['_id'] == id);
-
+    filteredRecettes.removeWhere((item) => item['_id'] == id);
     setState(() {});
   }
 
   String getPreparationLevel(dynamic preptime) {
     if (preptime == null) return 'Inconnu';
-
     int time = int.tryParse(preptime.toString()) ?? 0;
+    if (time < 25) return 'Facile';
+    if (time <= 60) return 'Moyen';
+    return 'Difficile';
+  }
 
-    if (time < 25) {
-      return 'Facile';
-    } else if (time >= 25 && time <= 60) {
-      return 'Moyen';
-    } else {
-      return 'Difficile';
+  void _onItemTapped(int index) {
+    if (_selectedIndex == index) return;
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, '/home');
+        break;
+      case 1:
+        break;
     }
   }
 
@@ -70,8 +106,8 @@ class _FavorisState extends State<Favoris> {
         backgroundColor: Color(0xFFECEAD6),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.yellow),
-          onPressed: () {},
+          icon: Icon(Icons.arrow_back, color: Color(0xFFFFC107)),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text('Mes Favoris', style: TextStyle(color: Colors.black)),
         centerTitle: true,
@@ -82,6 +118,7 @@ class _FavorisState extends State<Favoris> {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: TextField(
+              controller: searchController,
               decoration: InputDecoration(
                 hintText: 'Quel Recette Vous Souhaitez...',
                 filled: true,
@@ -90,17 +127,36 @@ class _FavorisState extends State<Favoris> {
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
                 ),
+                prefixIcon: Icon(Icons.search),
+                suffixIcon:
+                    searchController.text.isNotEmpty
+                        ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            searchController.clear();
+                            searchRecipes('');
+                          },
+                        )
+                        : null,
               ),
+              onChanged: searchRecipes,
             ),
           ),
           Expanded(
             child:
                 isLoading
                     ? Center(child: CircularProgressIndicator())
+                    : filteredRecettes.isEmpty
+                    ? Center(
+                      child: Text(
+                        "Aucune recette trouvée",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
                     : ListView.builder(
-                      itemCount: recettes.length,
+                      itemCount: filteredRecettes.length,
                       itemBuilder: (context, index) {
-                        final recette = recettes[index];
+                        final recette = filteredRecettes[index];
                         final id = recette['_id'];
                         return Card(
                           shape: RoundedRectangleBorder(
@@ -177,14 +233,14 @@ class _FavorisState extends State<Favoris> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.yellow,
+        backgroundColor: Color(0xFFFFC107),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.restore), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Accueil'),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoris'),
         ],
       ),
     );

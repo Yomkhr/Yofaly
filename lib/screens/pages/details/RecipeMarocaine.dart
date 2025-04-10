@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:yofaly/core/api_service.dart';
 import 'package:yofaly/core/favorite_service.dart';
 import 'package:yofaly/screens/pages/details/RecipeDetails.dart';
+import 'package:yofaly/screens/pages/details/favoris.dart'; // Importez votre page Favoris
 
 class Recipemarocaine extends StatefulWidget {
   final String origin;
+  final String recipetype;
 
-  const Recipemarocaine({Key? key, required this.origin}) : super(key: key);
+  const Recipemarocaine({
+    Key? key,
+    required this.origin,
+    required this.recipetype,
+  }) : super(key: key);
 
   @override
   _RecipemarocaineState createState() => _RecipemarocaineState();
@@ -14,11 +20,10 @@ class Recipemarocaine extends StatefulWidget {
 
 class _RecipemarocaineState extends State<Recipemarocaine> {
   List<Map<String, dynamic>> recettes = [];
-  List<Map<String, dynamic>> filteredRecettes = []; // For search results
-  TextEditingController searchController = TextEditingController(); // Add this
+  List<Map<String, dynamic>> filteredRecettes = [];
+  TextEditingController searchController = TextEditingController();
 
   List<String> favoriteIds = [];
-
   bool isLoading = true;
 
   getRecipes() async {
@@ -27,12 +32,15 @@ class _RecipemarocaineState extends State<Recipemarocaine> {
     });
     try {
       dynamic response = await ApiService().getRecipesByOrigin(widget.origin);
-      // dynamic response = await ApiService().getRecipes();
-
       favoriteIds = await FavoriteService.getFavoriteIds();
-      // Assuming response is a List of Maps
-      recettes = List<Map<String, dynamic>>.from(response);
-      filteredRecettes = recettes; // Initialize filtered list with all recipes
+
+      recettes =
+          List<Map<String, dynamic>>.from(response).where((r) {
+            return (r['recipetype'] as List).contains(widget.recipetype);
+          }).toList();
+
+      filteredRecettes = recettes;
+
       setState(() {
         isLoading = false;
       });
@@ -41,11 +49,9 @@ class _RecipemarocaineState extends State<Recipemarocaine> {
       setState(() {
         isLoading = false;
       });
-      return [];
     }
   }
 
-  // Add this search function
   void searchRecipes(String query) {
     if (query.isEmpty) {
       setState(() {
@@ -72,7 +78,7 @@ class _RecipemarocaineState extends State<Recipemarocaine> {
 
   @override
   void dispose() {
-    searchController.dispose(); // Dispose the controller
+    searchController.dispose();
     super.dispose();
   }
 
@@ -111,9 +117,11 @@ class _RecipemarocaineState extends State<Recipemarocaine> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.yellow),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        title: Image.asset('assets/logo.png', height: 40),
+        title: Image.asset('assets/images/logo.png', height: 40),
         centerTitle: true,
         actions: [Icon(Icons.battery_full, color: Colors.black)],
       ),
@@ -150,6 +158,13 @@ class _RecipemarocaineState extends State<Recipemarocaine> {
             child:
                 isLoading
                     ? Center(child: CircularProgressIndicator())
+                    : filteredRecettes.isEmpty
+                    ? Center(
+                      child: Text(
+                        "Aucune recette trouvée",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
                     : ListView.builder(
                       itemCount: filteredRecettes.length,
                       itemBuilder: (context, index) {
@@ -251,16 +266,56 @@ class _RecipemarocaineState extends State<Recipemarocaine> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.yellow,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.restore), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
-        ],
+      bottomNavigationBar: Container(
+        color: Color(0xFFFFC107),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            const SizedBox(width: 40),
+            Expanded(
+              flex: 1,
+              child: IconButton(
+                icon: Icon(Icons.home, color: Colors.black, size: 28),
+                onPressed: () {
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                },
+              ),
+            ),
+            const Spacer(flex: 1),
+            Expanded(
+              flex: 1,
+              child: IconButton(
+                icon: Icon(
+                  Icons.favorite_border,
+                  color: Colors.black,
+                  size: 28,
+                ),
+                onPressed: () {
+                  // Navigation vers la page des favoris
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Favoris()),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 20),
+            Container(
+              margin: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A4A4A),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                '',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
       ),
     );
   }

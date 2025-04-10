@@ -5,6 +5,8 @@ import 'package:yofaly/screens/pages/details/LoginScreen.dart' as xx;
 import 'package:yofaly/screens/pages/details/SignupScreen.dart';
 import 'package:yofaly/screens/pages/details/SignupSuccess.dart';
 import 'package:yofaly/screens/pages/details/ForgotPasswordScreen.dart';
+import 'package:yofaly/screens/pages/details/favoris.dart';
+import 'package:yofaly/screens/pages/details/profil.dart';
 import 'package:yofaly/screens/pages/home/home.dart';
 import 'package:yofaly/providers/produit_provider.dart'; // Importez votre Provider
 
@@ -40,6 +42,10 @@ class MyApp extends StatelessWidget {
         '/signup_success': (context) => SignUpSuccess(),
         '/forgot_password': (context) => ForgotPasswordScreen(),
         '/accueil': (context) => Home(),
+        '/login': (context) => xx.LoginScreen(),
+        '/profile': (context) => Profil(),
+        '/home': (context) => Home(),
+        '/favorites': (context) => Favoris(),
       },
       // Optionnel : gestion des routes inconnues
       onUnknownRoute:
